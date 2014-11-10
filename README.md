@@ -1,6 +1,7 @@
 # [The City University of New York](http://cuny.edu) 
 ## CUNY  WordPress Theme 
 ##### Version 5.75
-This a public repository design and develop by the web service team at CUNY.
-This repository is a public resource for students, faculty and others.
+This WordPress theme is  design and develop by the web services team at CUNY Communication & Marketing.
+This theme  is a public resource for students, faculty and others.
+Feel free to contribute and collaborate to this project.
  

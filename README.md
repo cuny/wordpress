@@ -1,7 +1,4 @@
 # [The City University of New York](http://cuny.edu) 
-## CUNY  WordPress Theme 
-##### Version 5.75
-This WordPress theme is  design and develop by the web services team at CUNY Communication & Marketing.
-This theme  is a public resource for students, faculty and others.
-Feel free to contribute and collaborate to this project.
- 
+## Office of Communications and Marketing
+
+This repository is a public resource for students, faculty, and the WordPress community at large. It includes plugins and themes used on cuny.edu and other websites managed by our office.

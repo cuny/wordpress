@@ -6,6 +6,7 @@
 
 
 This repository is a public resource for students, faculty, and the WordPress community at large. 
+
 It includes plugins and themes used on cuny.edu and other websites managed by our office.
 
 ##Installation

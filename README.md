@@ -1,7 +1,7 @@
 #[The City University of New York](http://cuny.edu)
 ##Office of Communications and Marketing
 ###[wordpress](https://github.com/cuny/wordpress)
-##### Version: 5.75
+
 **Maintainers: [gerlando](https://github.com/gerlandotermini), [sungsulee](https://github.com/sungsulee), [burgerk](https://github.com/burgerk), [kubicue](https://github.com/kubicue)**
 
 

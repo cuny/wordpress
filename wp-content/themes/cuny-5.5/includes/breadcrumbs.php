@@ -1,6 +1,6 @@
 		<section class="wpb_row vc_row-fluid smartphone-hide">
 			<div class="wpb_column vc_col-sm-12 column_container">
-				<div class="wpb_wrapper">
+				<div class="wpb_wrapper" role="main">
 					<?php if (is_page()): ?>
 					<ul class="breadcrumbs inline">
 						<li><a href="http://www.cuny.edu">Welcome</a></li>

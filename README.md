@@ -10,7 +10,7 @@ It includes plugins and themes used on cuny.edu and other websites managed by ou
 
 ##Installation
 Install this WordPress theme like any other theme. See [WordPress](http://codex.wordpress.org/Using_Themes) Documentation.
-
+## Dependencies 
 ###GNU General Public License
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

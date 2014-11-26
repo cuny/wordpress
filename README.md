@@ -9,7 +9,7 @@ This repository is a public resource for students, faculty, and the WordPress co
 It includes plugins and themes used on cuny.edu and other websites managed by our office.
 
 ##Getting Started
-    To install this theme follow this steps:
+    Steps to install the theme:
     - Create a database for the WordPress install ie.(wp_projectname).
     - Clone or download the zip contents of this project to your www or public root folder.
     - Install WordPress from your the browser.

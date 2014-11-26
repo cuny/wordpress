@@ -1,5 +1,5 @@
 <?php get_header(); ?>
-	<div id="wrap-content">
+	<div id="wrap-content" role="main">
 		<?php include_once('include-breadcrumbs.php'); ?>
 		
 		<section class="wpb_row vc_row-fluid">
@@ -11,7 +11,7 @@
 		</section><!-- .wpb_row.vc_row-fluid -->
 
 		<section class="wpb_row vc_row-fluid">
-			<div class="vc_col-sm-3 sidebar wpb_column column_container">
+			<div class="vc_col-sm-3 sidebar wpb_column column_container"role="complementary">
 				<ul class="wpb_wrapper">
 					<?php dynamic_sidebar( 'Left Sidebar' ); ?>
 				</ul>

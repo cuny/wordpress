@@ -1,7 +1,7 @@
 </div><!-- #main-wrapper -->
 
-<footer class="wpb_row vc_row-fluid" id="footer-nav">
-	<nav id="social-media-nav" class="wpb_column vc_col-sm-3 column_container">
+<footer class="wpb_row vc_row-fluid" id="footer-nav" role="contentinfo">
+	<nav id="social-media-nav" class="wpb_column vc_col-sm-3 column_container" role="navigation">
 		<ul class="inline">
 			<li>
 				<div class="addthis_toolbox addthis_default_style" id="share-box">
@@ -17,7 +17,7 @@
 		</ul>
 	</nav>
 
-	<nav id="media-nav" class="wpb_column vc_col-sm-3 column_container">
+	<nav id="media-nav" class="wpb_column vc_col-sm-3 column_container"role="navigation">
 		<h2>CUNY Media</h2>
 		<ul>
 			<li><a href="http://www.youtube.com/user/CUNYMedia">Watch CUNY CHANNEL</a></li>
@@ -28,7 +28,7 @@
 		</ul>
 	</nav>
 
-	<nav id="financial-aid-nav" class="wpb_column vc_col-sm-3 column_container">
+	<nav id="financial-aid-nav" class="wpb_column vc_col-sm-3 column_container" role="navigation">
 		<h2>Financial Aid Tool Box</h2>
 		<ul>
 			<li><a href="http://www.cuny.edu/about/resources/value/affordable.html">Keeping Tuition Affordable</a></li>
@@ -40,7 +40,7 @@
 		</ul>
 	</nav>
 
-	<nav id="quick-links-nav" class="wpb_column vc_col-sm-3 column_container">
+	<nav id="quick-links-nav" class="wpb_column vc_col-sm-3 column_container" role="navigation">
 		<h2>Quick Links</h2>
 		<ul>
 			<li>
@@ -59,8 +59,8 @@
 	</nav>
 </footer>
 
-<footer class="wpb_row vc_row-fluid" id="basement">
-	<nav id="basement-nav" class="wpb_column vc_col-sm-12 column_container">
+<footer class="wpb_row vc_row-fluid" id="basement" role="contentinfo">
+	<nav id="basement-nav" class="wpb_column vc_col-sm-12 column_container" role="navigation">
 		<ul class="inline">
 			<li><a href="http://www.cuny.edu/main/website/copyright.html" title="Copyright 2014">Copyright &copy; <?php echo date('Y'); ?></a></li>
 			<li><a href="http://www.cuny.edu/main/website.html" title="Website">Website</a></li>

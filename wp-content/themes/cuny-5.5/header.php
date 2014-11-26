@@ -17,10 +17,10 @@
 	<?php wp_head(); ?>
 </head>
 <body <?php body_class(); ?>>
-<div id="main-wrapper">
-	<header id="top-header">
+<div id="main-wrapper"role="main">
+	<header id="top-header" role="banner">
 		<section id="hidden-navigations">
-			<nav id="skip-links" class="hidden">
+			<nav id="skip-links" class="hidden" role="navigation">
 				<ul>
 					<li><a href="#wrap-content">Skip to Content</a></li>
 					<li><a href="#main-nav-content">Skip to Main Website Menu</a></li>
@@ -29,7 +29,7 @@
 				</ul>
 			</nav>
 			
-			<nav id="find-sliding-nav" class="wpb_row vc_row-fluid hidden">
+			<nav id="find-sliding-nav" class="wpb_row vc_row-fluid hidden"role="navigation">
 				<div class="wpb_column vc_col-sm-3 column_container">
 					<h2>General Finds</h2>
 					<ul>
@@ -83,7 +83,7 @@
 				<a href="javascript:;" class="close-sliding-nav">X</a>
 			</nav>
 
-			<nav id="colleges-sliding-nav" class="wpb_row vc_row-fluid hidden">
+			<nav id="colleges-sliding-nav" class="wpb_row vc_row-fluid hidden"role="navigation">
 				<div class="wpb_column vc_col-sm-3 column_container">
 					<h2>Senior Colleges</h2>
 					<ul>
@@ -144,7 +144,7 @@
 			</div>
 
 			<div class="wpb_column vc_col-sm-9 column_container smartphone-hide">
-				<nav id="tools-nav">
+				<nav id="tools-nav" role="navigation">
 					<ul class="inline">
 						<li><i class="cuny-icon-down"></i> <a href="javascript:;" class="menu-toggle" data-slide-nav="find-sliding-nav">Find It</a></li>
 						<li><i class="cuny-icon-down"></i> <a href="javascript:;" class="menu-toggle" data-slide-nav="colleges-sliding-nav">College Websites</a></li>
@@ -152,7 +152,7 @@
 					</ul>
 				</nav>
 
-				<nav id="role-nav">
+				<nav id="role-nav"role="navigation">
 					<ul id="role-nav-content" class="inline">
 						<li><a class="role-link" href="http://www.cuny.edu/future-students.html" title="Future Students">Future Students</a></li>
 						<li><a class="role-link" href="http://www.cuny.edu/current-students.html" title="Current Students">Current Students</a></li>
@@ -165,7 +165,7 @@
 
 		<section id="main-nav-search" class="wpb_row vc_row-fluid smartphone-hide overflow-visible">
 			<div class="wpb_column vc_col-sm-12 column_container">
-				<nav id="main-nav" role="main">
+				<nav id="main-nav" role="main"role="navigation">
 					<ul id="main-nav-content" class="inline">
 						<li><a href="http://www.cuny.edu/about.html">About</a>
 							<ul>
@@ -275,7 +275,7 @@
 					</fieldset>
 				</form><!-- #main-search-form -->
 
-				<nav id="login-nav">
+				<nav id="login-nav"role="navigation">
 					<ul class="inline">
 						<li><a href="https://cunyportal.cuny.edu/cpr/authenticate/portal_login.jsp">Log-in</a>
 							<ul id="login-nav-content">

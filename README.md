@@ -16,8 +16,14 @@ It includes plugins and themes used on cuny.edu and other websites managed by ou
     - Activate all the dependencies plugins (Visual Composer, Revolution Slider, hungryFeeds)
 
 ##Features
+<<<<<<< HEAD
    The purpose of this theme is to serve as a starting point to ease development setup for students, faculty and staff.
    The theme has the following features to adapt to most of the academic environment.
+=======
+
+    This theme is to serve as a starting point to ease development setup for students, faculty and staff.
+    The theme has the following features to adapt to most of the academic environment.
+>>>>>>> core
     - Fully responsive to integrate to many mobile devices
     - Accessible and comply with section 508c
     - Multipurpose layouts easy to integrate with flexible 12 column grid

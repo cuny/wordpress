@@ -13,7 +13,7 @@ It includes plugins and themes used on cuny.edu and other websites managed by ou
     - Create a database for the WordPress install ie.(wp_projectname).
     - Clone or download the zip contents of this project to your www or public root folder.
     - Install WordPress from your the browser.
-    - Activate all the dependencies pluggins (Visual Composer, Revolution Slider, hungryFeeds).
+    - Activate all the dependencies plugins (Visual Composer, Revolution Slider, hungryFeeds).
      
 ###GNU General Public License
     This program is free software: you can redistribute it and/or modify

@@ -10,10 +10,11 @@ It includes plugins and themes used on cuny.edu and other websites managed by ou
 
 ##Getting Started
     Steps to install this theme:
-    - Create a database for the WordPress install ie.(wp_projectname).
-    - Clone or download the zip contents of this project to your www or public root folder.
-    - Install WordPress from your the browser.
-    - Activate all the dependencies pluggins (Visual Composer, Revolution Slider, hungryFeeds).
+    - Create a database for the WordPress install ie.(wp_projectname)
+    - Clone or download the zip contents of this project to your www or public root folder
+    - Install WordPress from your the browser
+    - Activate all the dependencies plugins (Visual Composer, Revolution Slider, hungryFeeds)
+
 ##Features
    The purpose of this theme is to serve as a starting point to ease development setup for students, faculty and staff.
    The theme has the following features to adapt to most of the academic environment.
@@ -24,6 +25,7 @@ It includes plugins and themes used on cuny.edu and other websites managed by ou
     - Custom content/post type for faculty and staff
     - Create different roles and security levels
     - Secure and Scalable     
+
 ###GNU General Public License
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

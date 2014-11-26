@@ -9,14 +9,12 @@ This repository is a public resource for students, faculty, and the WordPress co
 It includes plugins and themes used on cuny.edu and other websites managed by our office.
 
 ##Getting Started
-To install this theme follow this steps:
+    To install this theme follow this steps:<br />
     - Create a database for the WordPress install ie.(wp_projectname).
     - Clone or download the zip contents of this project to your www or public root folder.
     - Install WordPress from your the browser.
     - Activate all the dependencies pluggins (Visual Composer, Revolution Slider, hungryFeeds).
-    
-##Dependencies
- 
+     
 ###GNU General Public License
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

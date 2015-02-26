@@ -2,7 +2,7 @@
 /**
  * Plugin Name: CUNY Font Icons
  * Description: Adds support for the CUNY font icons to the active theme
- * Version: 1.1
+ * Version: 1.2
  * Author: CUNY Office Of Communications and Marketing
  * License: GPL2
  */

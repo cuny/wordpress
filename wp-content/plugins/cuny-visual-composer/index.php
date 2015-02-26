@@ -2,7 +2,7 @@
 /**
  * Plugin Name: CUNY Visual Composer Elements
  * Description: Customize the behavior of Visual Composer
- * Version: 3.3
+ * Version: 3.4.2
  * Author: CUNY Office Of Communications and Marketing
  * License: GPL2
  */
@@ -30,7 +30,7 @@ class cuny_breadcrumbs_widget extends WP_Widget {
 	}
 
 	public function widget( $args, $instance ) {
-		$breadcrumbs = wp_nav_menu( array( 'menu' => $instance[ 'menu_id' ], 'menu_class' => 'breadcrumbs inline', 'echo' => false ) );
+		$breadcrumbs = wp_nav_menu( array( 'menu' => $instance[ 'menu_id' ], 'menu_class' => 'inline', 'menu_id' => 'breadcrumbs', 'echo' => false ) );
 		echo str_replace('</ul>', '<li class="last">'.$instance[ 'page_title' ].'</li></ul>', $breadcrumbs);
 	}
 
@@ -85,8 +85,7 @@ class cuny_contextual_menu_widget extends WP_Widget {
 	public function form( $instance ) {
 		extract( shortcode_atts( array(
 		  'page_id' => 0,
-		  'level' => 1,
-		  'depth' => 1,
+		  'children_only' => 0,
 		  'el_class' => ''
 		), $instance ) );
 
@@ -96,12 +95,8 @@ class cuny_contextual_menu_widget extends WP_Widget {
 		<input class="widefat" id="<?php echo $this->get_field_id( 'page_id' ); ?>" name="<?php echo $this->get_field_name( 'page_id' ); ?>" type="text" value="<?php echo esc_attr( $page_id ); ?>">
 		</p>
 		<p>
-		<label for="<?php echo $this->get_field_id( 'level' ); ?>"><?php _e( 'Level' ); ?></label> 
-		<input class="widefat" id="<?php echo $this->get_field_id( 'level' ); ?>" name="<?php echo $this->get_field_name( 'level' ); ?>" type="text" value="<?php echo esc_attr( $level ); ?>">
-		</p>
-		<p>
-		<label for="<?php echo $this->get_field_id( 'depth' ); ?>"><?php _e( 'Depth' ); ?></label> 
-		<input class="widefat" id="<?php echo $this->get_field_id( 'depth' ); ?>" name="<?php echo $this->get_field_name( 'depth' ); ?>" type="text" value="<?php echo esc_attr( $depth ); ?>">
+		<label for="<?php echo $this->get_field_id( 'children_only' ); ?>"><?php _e( 'Child Pages Only' ); ?></label> 
+		<input class="widefat" id="<?php echo $this->get_field_id( 'children_only' ); ?>" name="<?php echo $this->get_field_name( 'children_only' ); ?>" type="text" value="<?php echo esc_attr( $children_only ); ?>">
 		</p>
 		<p>
 		<label for="<?php echo $this->get_field_id( 'el_class' ); ?>"><?php _e( 'Extra Class' ); ?></label> 
@@ -163,11 +158,12 @@ class cuny_reusable_component_widget extends WP_Widget {
 	public function form( $instance ) {
 		extract( shortcode_atts( array(
 		  'post_id' => 0,
+		  'local_post_id' => 0,
 		  'el_class' => ''
 		), $instance ) );
 
 		$components = get_posts( array( 'posts_per_page' => -1, 'post_type' => 'cuny_reusable_comp') );
-		$components_dropdown = '';
+		$components_dropdown = '<option value="0">None</option>';
 		foreach($components as $a_component){
 			$is_selected = ($a_component->ID == $post_id)?' selected="selected"':'';
 			$components_dropdown .= "<option value='{$a_component->ID}'{$is_selected}>$a_component->post_title</option>";
@@ -177,6 +173,10 @@ class cuny_reusable_component_widget extends WP_Widget {
 		<p>
 		<label for="<?php echo $this->get_field_id( 'post_id' ); ?>"><?php _e( 'Component' ); ?></label> 
 		<select class="widefat" id="<?php echo $this->get_field_id( 'post_id' ); ?>" name="<?php echo $this->get_field_name( 'post_id' ); ?>"><?php echo $components_dropdown; ?></select>
+		</p>
+		<p>
+		<label for="<?php echo $this->get_field_id( 'local_post_id' ); ?>"><?php _e( 'Local Page ID' ); ?></label> 
+		<input class="widefat" id="<?php echo $this->get_field_id( 'local_post_id' ); ?>" name="<?php echo $this->get_field_name( 'local_post_id' ); ?>" type="text" value="<?php echo esc_attr( $local_post_id ); ?>">
 		</p>
 		<p>
 		<label for="<?php echo $this->get_field_id( 'el_class' ); ?>"><?php _e( 'Extra Class' ); ?></label> 
@@ -210,13 +210,15 @@ class cuny_visual_composer{
 
     // CUNY VC Elements
     add_shortcode( 'cuny_carousel', array( __CLASS__, 'carousel_shortcode' ) );
+    add_shortcode( 'cuny_expandable_link', array( __CLASS__, 'expandable_more_link_shorcode' ) );
     add_shortcode( 'cuny_reusable_component', array( __CLASS__, 'reusable_component_shortcode' ) );
     add_shortcode( 'cuny_contextual_menu', array( __CLASS__, 'contextual_menu_shortcode' ) );
 		add_shortcode( 'cuny_logo', array( __CLASS__, 'logo_shortcode' ) );
     add_shortcode( 'cuny_media_links', array( __CLASS__, 'media_links_shortcode' ) );
     add_shortcode( 'cuny_post_list', array( __CLASS__, 'post_list_shortcode' ) );
-    add_shortcode( 'cuny_page_title', array( __CLASS__, 'page_title_shortcode' ) );
     add_shortcode( 'cuny_section_header', array( __CLASS__, 'section_header_shortcode' ) );
+    add_shortcode( 'cuny_separator', array( __CLASS__, 'separator_shortcode' ) );
+    add_shortcode( 'cuny_text_box', array( __CLASS__, 'text_box_shortcode' ) );
 
     // Map shortcodes in Visual Composer
     add_action( 'vc_after_mapping', array( __CLASS__, 'shortcode_map' ) );
@@ -252,7 +254,7 @@ class cuny_visual_composer{
 	  $plugin_data = get_plugin_data(__FILE__);
 	  echo '
 	  <div class="updated">
-	    <p>'.sprintf('<strong>%s</strong> requires <strong><a href="http://bit.ly/vcomposer" target="_blank">Visual Composer</a></strong> to be installed and activated on your site.', $plugin_data['Name']).'</p>
+	    <p>'.sprintf('<strong>%s</strong> requires <strong><a href="http://bit.ly/vcomposer" target="_blank">Visual Composer 4.4+</a></strong> to be installed and activated on your site.', $plugin_data['Name']).'</p>
 	  </div>';
 	}
 
@@ -273,7 +275,7 @@ class cuny_visual_composer{
   	wp_enqueue_style( 'cuny_vc_style' );
 
   	if ( $hook == 'post.php' ) {
-	  	wp_register_script( 'cuny_vc_script', plugins_url( '/js/admin-functions.js', __FILE__ ), array( 'wpb_js_composer_js_view' ), null, true );
+	  	wp_register_script( 'cuny_vc_script', plugins_url( '/js/admin-functions.js', __FILE__ ), array( 'js_composer' ), null, true );
 	  	$cuny_vc_params = array(
 	  		'disable_sortable' => var_export( !current_user_can( 'delete_pages' ) && !current_user_can( 'cuny_editor_vc' ), true )
 	  	);
@@ -300,8 +302,11 @@ class cuny_visual_composer{
     extract( shortcode_atts( array(
 		  'header' => '',
 			'header_link' => '',
-			'items' => '3',
-			'autoplay' => '5000'
+			'type' => 'carousel',
+			'items' => 3,
+			'scroll_type' => 'item',
+			'autoplay' => '5',
+			'slide_container' => 'div'
 		), $atts ) );
 
 		wp_enqueue_style( 'cuny_carousel', plugins_url( 'css/slick/cuny-slick.css', __FILE__ ), array(), null );
@@ -313,19 +318,30 @@ class cuny_visual_composer{
 		// Remove empty DIVs, if needed
 		$converted_content = str_replace( '<div class="vc_row-full-width"></div>', '', $converted_content );
 
-		if ( !empty( $header_link ) ) {
-			$header = "<a href='{$header_link}'>{$header}</a>";
+		if ( $type != 'carousel' ){
+			$items = 1;
+			$header = '';
 		}
+		else {
+			$header = '<h1>'.$header.'</h1>';
+			if ( !empty( $header_link ) ) {
+				$header = "<a href='{$header_link}'>{$header}</a>";
+			}
 
-		$output .= '
-		<div class="cuny-carousel-container">
-			<h1>'.$header.'</h1>
+		}
+		$class = trim("cuny-carousel cuny-carousel-items-$items $type");
 
-			<div class="cuny-carousel cuny-carousel-items-'.$items.'"
-				data-autoplay="' . esc_attr( empty( $autoplay ) || $autoplay == '0' ? 'false' : $autoplay ) . '"
-				data-items="' . esc_attr( $items ) . '">'.$converted_content.' 
+		$items_to_scroll = ( $scroll_type == 'group' )?$items:1;
+
+		$output .= "
+		<div class='cuny-carousel-container'>
+			$header
+			<div class='$class'
+				data-autoplay='". esc_attr( empty( $autoplay ) || $autoplay == '0' ? 'false' : intval($autoplay) * 1000 ) . "'
+				data-items='" . esc_attr( $items ) . "' data-items-to-scroll='" . esc_attr( $items_to_scroll ) . "' data-slide-container='" . esc_attr( $slide_container ) . "'>
+					$converted_content 
 			</div>
-		</div>';
+		</div>";
 
 		return $output;
 	}
@@ -334,23 +350,48 @@ class cuny_visual_composer{
 	public static function contextual_menu_shortcode( $atts, $content = null ) {
 		extract( shortcode_atts( array(
 		  'page_id' => $GLOBALS['post']->ID,
-		  'level' => 1,
-		  'depth' => 1,
+		  'children_only' => 0,
 		  'el_class' => ''
 		), $atts ) );
 
 		$output = '';
 		$cuny_contextual_navigation_walker = new cuny_contextual_navigation_walker;
-		if ($level == 1) {
-			$output = wp_list_pages( array( 'child_of' => $page_id, 'title_li' => '', 'echo' => false, 'depth' => abs( $depth ) + 1, 'walker' => $cuny_contextual_navigation_walker ) );
+		
+		// The contextual navigation implements the following behavior:
+		// - on top level pages (no parent) it displays their child pages
+		// - on pages with siblings and/or children, it displays siblings and children
+		// - on pages with neither siblings nor children, it displays their parent, uncles and itself as a child page
+		// 
+		// Users can override this setting by selecting the corresponding checkbox
+
+		$ancestors = get_ancestors( $page_id, 'page' );
+
+		if ( empty( $ancestors ) || $children_only == 1 ) {
+			// Top Level Page
+			$output = wp_list_pages( array( 'child_of' => $page_id, 'title_li' => '', 'echo' => false, 'depth' => 1, 'walker' => $cuny_contextual_navigation_walker ) );
 		}
 		else{
-			$ancestors = get_ancestors( $page_id, 'page' );
-			if (!empty($ancestors)) {
-				$output = wp_list_pages( array( 'child_of' => $ancestors[abs($level)], 'title_li' => '', 'echo' => false, 'depth' => abs( $depth ) + 1, 'walker' => $cuny_contextual_navigation_walker ) );
+			// Retrieve the post object, if not current page
+			$parent_id = $ancestors[0];
+			if ($page_id != $GLOBALS['post']->ID) {
+				echo 'b';
+				$page_obj = get_post( $page_id );
+				$parent_id = $page_obj->parent_id;
 			}
-			else{ // Top Level Pages
-				$output = wp_list_pages( array( 'child_of' => 0, 'title_li' => '', 'echo' => false, 'depth' => abs( $depth ) + 1, 'walker' => $cuny_contextual_navigation_walker ) );
+
+			$siblings_count = count( get_pages( array( 'child_of' => $parent_id, 'exclude' => $page_id ) ) );
+			$children_count = count( get_pages( array( 'child_of' => $page_id ) ) );
+
+			// $siblings_and_their_children_output = wp_list_pages( array( 'child_of' => $parent_id, 'title_li' => '', 'echo' => false, 'depth' => 2, 'walker' => $cuny_contextual_navigation_walker ) );
+
+			if ( $siblings_count > 0 || $children_count > 0 ) {
+				$output = wp_list_pages( array( 'child_of' => $parent_id, 'title_li' => '', 'echo' => false, 'depth' => 2, 'walker' => $cuny_contextual_navigation_walker ) );
+			}
+			else {
+				// No siblings and no children
+				$page_obj = get_post( $parent_id );
+				$parent_id = $page_obj->parent_id;
+				$output = wp_list_pages( array( 'child_of' => $ancestors[1], 'title_li' => '', 'echo' => false, 'depth' => 2, 'walker' => $cuny_contextual_navigation_walker ) );
 			}
 		}
 
@@ -359,6 +400,20 @@ class cuny_visual_composer{
 			$output = "<ul class='navigation$el_class'>$output</ul>";
 		}
 		return $output;
+	}
+
+	public static function expandable_more_link_shorcode( $atts, $content = null ) {
+		extract( shortcode_atts( array(
+		  'target' => 'more-target',
+		  'expanded_title' => 'read less',
+		  'el_class' => ''
+		), $atts ) );
+
+		wp_enqueue_script( 'cuny_vc_script', plugins_url( 'js/functions.js', __FILE__ ), array(), null, true );
+
+		$el_class = trim("expandable-more-link expandable-more-link-closed $el_class");
+
+		return "<a href='#' class='$el_class' data-expand-target-element='$target' data-alt-title='$expanded_title'>$content</a>";
 	}
 
 	// [cuny_logo]
@@ -378,34 +433,6 @@ class cuny_visual_composer{
 				<li><i class="cuny-icon-right"></i> <a href="http://www.cuny.edu/radio" title="Listen CUNY Radio">Listen <span>CUNY RADIO</span></a></li>
 				<li><i class="cuny-icon-right"></i> <a href="http://www.cuny.edu/itunes" title="Inside CUNY Radio">Inside <span>CUNY iTUNES U</span></a></li>
 			</ul>';
-	}
-
-	// [cuny_page_title ancestor_level="0" el_class="class_name"]
-	public static function page_title_shortcode( $atts, $content = null ) {
-		extract( shortcode_atts( array(
-		  'ancestor_level' => 0,
-		  'link_to_page' => 'no',
-		  'el_class' => ''
-		), $atts ) );
-
-		if ($ancestor_level < 0){
-			$ancestors = get_ancestors( $GLOBALS['post']->ID, 'page' );
-			if (!empty($ancestors)){
-				$page_id = $ancestors[abs($ancestor_level) - 1];
-			}
-		}
-		else{
-			$page_id = $GLOBALS['post']->ID;
-		}
-
-		$el_class = !empty( $el_class ) ? " $el_class" : '';
-		$output = get_the_title( $page_id );
-
-		if ( $link_to_page == 'yes' ) {
-			$output = "<a href='".get_permalink($page_id)."'>$output</a>";
-		}
-
-		return "<h1 class='section-title$el_class'>$output</h1>";
 	}
 
 	// [cuny_post_list ancestor_level="0" el_class="class_name"]
@@ -520,10 +547,15 @@ class cuny_visual_composer{
 	public static function reusable_component_shortcode( $atts, $content = null ) {
 		extract( shortcode_atts( array(
 		  'post_id' => '0',
+		  'local_post_id' => 0,
 		  'el_class' => ''
 		), $atts ) );
 
-		$reusable_component_obj = get_post( $post_id );
+		if ( empty( $local_post_id ) && empty( $post_id ) ) {
+			return '';
+		}
+
+		$reusable_component_obj = !empty( $local_post_id )?get_post( $local_post_id ):get_post( $post_id );
 
 		if (!is_object($reusable_component_obj)){
 		 return '';
@@ -547,7 +579,7 @@ class cuny_visual_composer{
 		return $reusable_component_obj->post_content;
 	}
 
-	// [cuny_section_header title="section title" follow_url="http://twitter.com/" level="2" icon="rss" el_class="class_name"]
+	// [cuny_section_header title="section title" heading_url="http://www.cuny.edu" follow_url="http://twitter.com/" level="2" icon="rss" el_class="class_name"]
 	public static function section_header_shortcode( $atts, $content = null ) {
 		extract( shortcode_atts( array(
 		  'title' => '',
@@ -564,11 +596,76 @@ class cuny_visual_composer{
 			$title = "<a href='$heading_url'>$title</a>";
 		}
 
-		$el_class = !empty($el_class)?" $el_class":'';
-		if (!empty($title)){
-			$output = "<div class='section_header wpb_content_element'><div class='wpb_wrapper'><h$level class='btn$el_class'>$title <a class='follow' href='$follow_url'>Follow <i class='$icon'></i></a></h$level></div></div>";
+		$el_class = trim('section-header bg-blue'.(!empty($el_class)?" $el_class":''));
+		if ( !empty( $title ) ) {
+			$output = "<div><div class='wpb_wrapper'><h$level class='$el_class'>$title <a class='follow' href='$follow_url'>Follow <i class='$icon'></i></a></h$level></div></div>";
 		}
 		return $output;
+	}
+
+	// [cuny_separator type="" type="separator_line" title="Headline" title_url="http://www.cuny.edu" align="center" style="double"]
+	public static function separator_shortcode( $atts, $content = null ) {
+		extract( shortcode_atts( array(
+		  'type' => 'separator_line',
+		  'title' => '',
+		  'title_url' => '',
+		  'align' => 'center',
+		  'style' => '',
+		), $atts ) );
+
+		if ( !empty( $title ) ) {
+			$title= "<h2 class='$align'>$title</h2>";
+	    
+			// 
+	    $style ="double";
+	    if ( !empty( $title_url ) ) {
+				$title = "<a href='$title_url'>$title</a>";
+			}
+		}
+		return "
+			<div class='cuny_separator'>
+				<span class='$style'></span>
+				$title
+			</div>";
+	}
+
+	// [cuny_text_box color="sky" style="outlined" el_class="class_name"]content[/cuny_text_box]
+	public static function text_box_shortcode( $atts, $content = null ) {
+		extract( shortcode_atts( array(
+		  'color' => '',
+		  'style' => '',
+		  'read_more_text' => 'Read More',
+		  'read_less_text' => 'Read Less',
+		  'el_class' => ''
+		), $atts ) );
+
+		wp_enqueue_script( 'cuny_vc_script', plugins_url( 'js/functions.js', __FILE__ ), array(), null, true );
+
+		$content = preg_replace( '/<span id\=\"(more\-\d+)"><\/span>/', '<!--more-->', $content );
+		$content_exploded = explode( '<!--more-->', $content );
+
+		// White Box with no outline is not a 'box' (no padding)
+		if ( $color != 'box-white' || ($color == 'box-white' && $style != '' && $style != 'no-outline' ) ) {
+			$el_class = 'box '.$el_class;
+		}
+
+		$classes = trim("wpb_cuny_text_box wpb_text_column wpb_content_element $color $style $el_class");
+		$signature = substr( md5( $content_exploded[0] ), 0, 5 );
+
+		$content_exploded[0] = wpautop( trim( $content_exploded[0] ) . ( !empty( $content_exploded[1] ) ? " <a href='#' class='more expandable-more-link' data-expand-target-element='more-target-$signature' data-alt-title='$read_less_text'>$read_more_text</a>" : '') );
+
+		if ( !empty( $content_exploded[1] ) ) {
+			$content_exploded[1] = "<div class='wpb_wrapper hidden-content more-target-$signature'>" . wpautop( trim( $content_exploded[1] ) ) . "</div>";
+		}
+		else{
+			$content_exploded[1] = '';
+		}
+
+		return "
+			<div class='$classes'>
+				<div class='wpb_wrapper'>".do_shortcode($content_exploded[0])." </div>
+				".do_shortcode($content_exploded[1])."
+			</div>";
 	}
 
 	public static function shortcode_map(){
@@ -585,12 +682,20 @@ class cuny_visual_composer{
 			'container_not_allowed' => false,
 			'default_content' => '[vc_row_inner][vc_column_inner width="1/1"][/vc_column_inner][/vc_row_inner][vc_row_inner][vc_column_inner width="1/1"][/vc_column_inner][/vc_row_inner][vc_row_inner][vc_column_inner width="1/1"][/vc_column_inner][/vc_row_inner]',
 	    'params' => array(
+	    	array(
+					'type' => 'dropdown',
+					'heading' => 'Type',
+					'param_name' => 'type',
+					'value' => array('Carousel' => 'carousel', 'Slider' => 'slider', 'Single Bucket' => 'bucket' ),
+				  'description' => 'Slider: one item visible at a time, arrows vertically centered; Bucket: one item visible, arrows below the box; Carousel: default behavior.'
+				),
 				array(
 					'type' => 'textfield',
 					'heading' => 'Title',
 					'param_name' => 'header',
-					'value' => '',
-				  'description' => 'Header to be displayed above the carousel. Leave empty for no header.',
+					'value' => 'Headline',
+				  'description' => 'Header to be displayed above the carousel.',
+				  'dependency' => array( 'element' => 'type', 'value' => 'carousel' )
 				),
 				array(
 					'type' => 'textfield',
@@ -598,6 +703,7 @@ class cuny_visual_composer{
 					'param_name' => 'header_link',
 					'value' => '',
 				  'description' => "Target URL for the header. Leave empty if you don't need to link the header.",
+				  'dependency' => array( 'element' => 'type', 'value' => 'carousel' )
 				),
 				array(
 					'type' => 'dropdown',
@@ -605,20 +711,42 @@ class cuny_visual_composer{
 					'param_name' => 'items',
 					'value' => array(2, 3, 4, 6),
 				  'description' => 'Max items to display at a time.',
+				  'dependency' => array( 'element' => 'type', 'value' => 'carousel' ),
+				  'group' => 'Advanced Options'
+				),
+				array(
+					'type' => 'dropdown',
+					'heading' => 'Scrolling Behavior',
+					'param_name' => 'scroll_type',
+					'value' => array(
+						'Item' => 'item',
+						'Group' => 'group'
+					),
+				  'description' => 'Max items to display at a time.',
+				  'dependency' => array( 'element' => 'type', 'value' => 'carousel' ),
+				  'group' => 'Advanced Options'
 				),
 				array(
 					'type' => 'textfield',
 					'heading' => 'Autoplay',
 					'param_name' => 'autoplay',
-					'value' => '10000',
-					'description' => 'Enter an amount in milliseconds for the carousel to move. Leave blank or set to zero to disable autoplay.',
+					'value' => '10',
+					'description' => 'Enter an amount in seconds for the carousel to move. Leave blank or set to zero to disable autoplay.',
+					'group' => 'Advanced Options'
+				),
+				array(
+					'type' => 'textfield',
+					'heading' => 'Slide Container',
+					'param_name' => 'slide_container',
+					'value' => 'section',
+					'description' => 'Specify what HTML element is to be considered as the container for an individual slide (div, section, etc).',
 				)
 	    )
 		) );
 
 		// Reusable Component Widget
 		$components = get_posts( array( 'posts_per_page' => -1, 'post_type' => 'cuny_reusable_comp') );
-		$components_dropdown = array();
+		$components_dropdown = array('None' => 0);
 		foreach($components as $a_component){
 			$components_dropdown[$a_component->post_title] = $a_component->ID;
 		}
@@ -634,12 +762,20 @@ class cuny_visual_composer{
 		    array(
 		      'type' => 'dropdown',
 		      'holder' => 'div',
-		      'heading' => 'Component',
+		      'heading' => 'Global Component',
 		      'param_name' => 'post_id',
 		      'value' => $components_dropdown,
-		      'description' => 'Select a component you would like to use',
+		      'description' => 'Select a global component you would like to use. If you would like to use a local component (page), use the field here below.',
 		      'admin_label' => true
 		    ),
+		    array(
+			    'type' => 'textfield',
+			    'heading' => 'Page ID',
+			    'param_name' => 'local_post_id',
+			    'description' => 'Enter the page ID of the component you would like to use. This option, if not empty, overrides the global component chosen here above.',
+			    'dependency' => array( 'element' => 'post_id', 'value' => '0' ),
+			    'admin_label' => true
+			  ),
 		    array(
 			    'type' => 'textfield',
 			    'heading' => 'Extra class name',
@@ -660,26 +796,15 @@ class cuny_visual_composer{
 		  'icon' => 'icon-wpb-cuny',
 		  'params' => array(
 		    array(
-		      'type' => 'textfield',
-		      'holder' => 'div',
-		      'heading' => 'Level',
-		      'param_name' => 'level',
-		      'value' => 1,
-		      'description' => 'Specify the navigation level you want to display (0: siblings, 1: child pages, negative value: ancestors at that level).',
-		      'admin_label' => true
-		    ),
+			    'type' => 'checkbox',
+			    'heading' => 'Child Pages Only',
+			    'param_name' => 'children_only',
+			    'value' =>  array( 'Yes' => 1 ),
+			    'description' => 'Check this option if you would like this navigation to behave like a top level page and display its child pages only.',
+			    'admin_label' => true
+			  ),
 		    array(
 		      'type' => 'textfield',
-		      'holder' => 'div',
-		      'heading' => 'Depth',
-		      'param_name' => 'depth',
-		      'value' => 1,
-		      'description' => 'Indicate the number of descendants you want to display (0: siblings only, no children, 1: siblings and children, etc).',
-		      'admin_label' => true
-		    ),
-		    array(
-		      'type' => 'textfield',
-		      'holder' => 'div',
 		      'heading' => 'Page ID',
 		      'param_name' => 'page_id',
 		      'value' => !empty( $GLOBALS['post']->ID )?$GLOBALS['post']->ID:'',
@@ -820,46 +945,9 @@ class cuny_visual_composer{
 		  )
 		) );
 
-		// Section Title Widget
-		vc_map( array(
-		  'name' => 'Section Title',
-		  'base' => 'cuny_page_title',
-		  'description' => 'Displays this page\'s section title',
-		  'class' => '',
-		  'category' => 'Content',
-		  'controls' => 'full',
-		  'icon' => 'icon-wpb-cuny',
-		  'params' => array(
-		    array(
-		      'type' => 'textfield',
-		      'holder' => 'div',
-		      'heading' => 'Ancestor Level',
-		      'param_name' => 'ancestor_level',
-		      'value' => -1,
-		      'description' => 'Specify the ancestor level you want to use (0: page itself, -1: parent, -2: grandparent, etc).',
-		      'admin_label' => true
-		    ),
-		    array(
-		      'type' => 'dropdown',
-		      'holder' => 'div',
-		      'heading' => 'Link to Page',
-		      'param_name' => 'link_to_page',
-		      'value' => array('Yes' => 'yes', 'No' => 'no'),
-		      'description' => 'Link section title to its target page.',
-		      'admin_label' => false
-		    ),
-		    array(
-			    'type' => 'textfield',
-			    'heading' => 'Extra class name',
-			    'param_name' => 'el_class',
-			    'description' => 'If you wish to style particular content element differently, then use this field to add a class name and then refer to it in your css file.'
-			  )
-		  )
-		) );
-
 		// Section Header
 		vc_map( array(
-		  'name' => 'Sidebar Header',
+		  'name' => 'Section Header',
 		  'base' => 'cuny_section_header',
 		  'description' => 'Displays a section heading',
 		  'class' => '',
@@ -881,16 +969,16 @@ class cuny_visual_composer{
 		      'holder' => 'div',
 		      'heading' => 'Heading Link',
 		      'param_name' => 'heading_url',
-		      'value' => 'http://',
+		      'value' => '',
 		      'description' => 'Target associated to the heading.',
 		      'admin_label' => false
 		    ),
 		    array(
 		      'type' => 'textfield',
 		      'holder' => 'div',
-		      'heading' => 'Follow Link',
+		      'heading' => 'Follow',
 		      'param_name' => 'follow_url',
-		      'value' => 'http://',
+		      'value' => '',
 		      'description' => 'Target associated to the FOLLOW link.',
 		      'admin_label' => false
 		    ),
@@ -899,7 +987,7 @@ class cuny_visual_composer{
 		      'holder' => 'div',
 		      'heading' => 'Heading Tag',
 		      'param_name' => 'level',
-		      'value' => array('H2' => 2, 'H3' => 3, 'H4' => 4, 'H5' => 5),
+		      'value' => array('H2' => 2, 'H3' => 3),
 		      'description' => 'Choose what heading level to use for your section heading.',
 		      'admin_label' => true
 		    ),
@@ -920,6 +1008,150 @@ class cuny_visual_composer{
 			  )
 		  )
 		) );
+
+		// Text Box
+		vc_map( array(
+		  'name' => 'Text Box',
+		  'base' => 'cuny_text_box',
+		  'description' => 'A box of text with a WYSIWYG editor and layout options',
+		  'class' => '',
+		  'category' => 'Content',
+		  'icon' => 'icon-wpb-cuny',
+		  'admin_enqueue_js' => plugins_url( '/js/shortcodes/text-box.js', __FILE__ ),
+		  'js_view' => 'CUNYTextBox',
+		  'params' => array(
+		    array(
+		      'type' => 'textarea_html',
+		      'holder' => 'div',
+		      'heading' => 'Content',
+		      'param_name' => 'content',
+		      'value' => '',
+		      'description' => 'Type here the content you want to display inside your text box. Use the built-in &lt;--more--&gt; (Read More) WordPress tag to separate the visible and the hidden text.'
+		    ),
+		    array(
+			    'type' => 'textfield',
+			    'heading' => 'Extra class name',
+			    'param_name' => 'el_class',
+			    'description' => 'If you wish to style particular content element differently, then use this field to add a class name and then refer to it in your css file.',
+			  ),
+		    array(
+		      'type' => 'dropdown',
+		      'holder' => 'div',
+		      'heading' => 'Background Color',
+		      'param_name' => 'color',
+		      'value' => array(
+		      	'White' => 'box-white',
+		      	'Sky' => 'box-sky',
+		      	'Smoke' => 'box-smoke',
+		      	'Tan' => 'box-tan'
+		      ),
+		      'description' => 'Pick a color for the box background.',
+		      'group' => 'Advanced Options',
+		    ),
+		    array(
+		      'type' => 'dropdown',
+		      'holder' => 'div',
+		      'heading' => 'Outline and corners',
+		      'param_name' => 'style',
+		      'value' => array(
+	      		'None' => 'no-outline',
+	      		'Folded Top' => 'folded tc',
+	      		'Folded Bottom' => 'folded bc',
+	      		'Folded Top + Bottom' => 'folded bc tc',
+	      		'Outlined' => 'outlined',
+	      		'Rounded' => 'rounded'
+	      	),
+		      'description' => 'Apply a style to the box.',
+		      'group' => 'Advanced Options',
+		      'dependency' => array( 'element' => 'color', 'value' => array( 'box-sky', 'box-smoke', 'box-tan' ) ),
+		      'admin_label' => true
+		    ),
+		    array(
+					'type' => 'textfield',
+					'heading' => 'Read More Text',
+					'param_name' => 'read_more_text',
+					'value' => 'Read More',
+				  'description' => 'Optional: text to use for the link appended to the visible portion of the text.',
+				  'group' => 'Advanced Options'
+				),
+				array(
+					'type' => 'textfield',
+					'heading' => 'Read Less Text',
+					'param_name' => 'read_less_text',
+					'value' => 'Read Less',
+				  'description' => 'Optional: text to display for the link when the hidden text is expanded.',
+				  'group' => 'Advanced Options'
+				)
+		  )
+		));
+		
+		// Separator Line - Separator with Text
+		vc_map( array(
+		  'name' => 'Separator',
+		  'base' => 'cuny_separator',
+		  'description' => 'Horizontal separator line and separator line with heading',
+		  'class' => '',
+		  'category' => 'Content',
+		  'icon' => 'icon-wpb-cuny',
+		  'params' => array(
+		  	array(
+		      'type' => 'dropdown',
+		      'holder' => 'div',
+		      'heading' => 'Type',
+		      'param_name' => 'type',
+		      'value' => array(
+		      	'Separator Line' => 'separator_line',
+		      	'Separator Line with Title' => 'separator_line_title',
+		      ),
+		      'description' => 'Select separator line or separator line with title.',
+			),
+		     array(
+		      'type' => 'textfield',
+		      'holder' => 'div',
+		      'heading' => 'Title',
+		      'param_name' => 'title',
+		      'value' => '',
+		      'description' => 'Separator title.',
+			  'dependency' => array( 'element' => 'type', 'value' => 'separator_line_title' )
+		    ),
+		   	array(
+		      'type' => 'dropdown',
+		      'holder' => 'div',
+		      'heading' => 'Title alignment',
+		      'param_name' => 'align',
+		      'value' => array(
+		      	'Left' => 'left',
+		      	'Center' => 'center',
+		      ),
+		      'description' => 'Select title alignment.',
+		      'dependency' => array( 'element' => 'type', 'value' => 'separator_line_title' )
+			),
+		    array(
+		      'type' => 'textfield',
+		      'holder' => 'div',
+		      'heading' => 'Title Link',
+		      'param_name' => 'title_url',
+		      'value' => '',
+		      'description' => 'Link to the title.',
+		      'dependency' => array( 'element' => 'type', 'value' => 'separator_line_title' )
+		    ),
+		    array(
+		      'type' => 'dropdown',
+		      'holder' => 'div',
+		      'heading' => 'Style',
+		      'param_name' => 'style',
+		      'value' => array(
+		      	'Single' => 'single',
+		      	'Double' => 'double',
+		      	'Dashed' => 'dashed',
+		      	'Dotted' => 'dotted'
+		      ),
+		      'description' => 'Select line styling - single, double etc',
+		      'dependency' => array( 'element' => 'type', 'value' => 'separator_line' )
+
+				)
+		  )
+		));
 		
     // Customize some of the built-in shortcodes
 
@@ -1068,10 +1300,83 @@ class cuny_visual_composer{
 function init_cuny_carousel_class(){
 	//Your "container" content element should extend WPBakeryShortCodesContainer class to inherit all required functionality
 	if ( class_exists( 'WPBakeryShortCodesContainer' ) ) {
-	    class WPBakeryShortCode_Cuny_Carousel extends WPBakeryShortCodesContainer {
-	    }
+    class WPBakeryShortCode_Cuny_Carousel extends WPBakeryShortCodesContainer {
+    }
 	}
 }
+
+function customize_buttons_first_row( $buttons ) {
+
+	array_push( $buttons, 'cuny_expandable_link' );
+
+	// Remove unneeded buttons
+	foreach ( array( 'hr', 'revslider' ) as $a_button ) {
+		if( ( $key = array_search( $a_button, $buttons ) ) !== false ) {
+			unset($buttons[$key]);
+		}
+	}
+
+  return $buttons;
+}
+function customize_buttons_second_row( $buttons ) {
+
+	array_push( $buttons, 'styleselect' );
+
+
+  return $buttons;
+}
+function register_button( $buttons ) {
+
+	array_push( $buttons, 'cuny_expandable_link' );
+
+	// Remove unneeded buttons
+	foreach ( array( 'hr', 'revslider' ) as $a_button ) {
+		if( ( $key = array_search( $a_button, $buttons ) ) !== false ) {
+			unset($buttons[$key]);
+		}
+	}
+
+  return $buttons;
+}
+function add_plugin( $plugin_array ) {
+   $plugin_array['cuny_expandable_link'] = plugins_url( '/js/expandable-more-button.js', __FILE__ );
+   return $plugin_array;
+}
+function my_recent_posts_button() {
+
+   if ( ! current_user_can('edit_posts') && ! current_user_can('edit_pages') ) {
+      return;
+   }
+
+   if ( get_user_option('rich_editing') == 'true' ) {
+      add_filter( 'mce_external_plugins', 'add_plugin' );
+      add_filter( 'mce_buttons', 'customize_buttons_first_row', 100 );
+      add_filter( 'mce_buttons_2', 'customize_buttons_second_row', 100 );
+   }
+
+}
+add_action('init', 'my_recent_posts_button');
+
+function my_mce_before_init_insert_formats( $init_array ) {  
+	// Define the style_formats array
+	$style_formats = array(  
+		// Each array child is a format with it's own settings
+		array(
+			'title' => 'Translation',
+			'classes' => 'translation',
+			'wrapper' => false,
+			
+		)
+	);  
+	
+	$init_array['block_formats'] = "Paragraph=p;Heading 2=h2;Heading 3=h3";
+	$init_array['style_formats'] = json_encode( $style_formats );
+	
+	return $init_array;  
+  
+} 
+// Attach callback to 'tiny_mce_before_init' 
+add_filter( 'tiny_mce_before_init', 'my_mce_before_init_insert_formats' );  
 
 // Init the plugin
 add_action( 'plugins_loaded', array('cuny_visual_composer', 'init'), 10 );

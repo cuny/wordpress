@@ -2,7 +2,13 @@ jQuery(document).ready(function($) {
 	"use strict";
 
 	$('.cuny-carousel').each(function(){
+		if (typeof $(this).slick != 'function'){
+			return false;
+		}
+
 		$(this).slick({
+			autoplay: (parseInt($(this).data('autoplay')) > 0) ? true : false,
+  		autoplaySpeed: $(this).data('autoplay'),
 		  infinite: true,
 		  refresh: true,
 		  responsive: [
@@ -25,8 +31,9 @@ jQuery(document).ready(function($) {
 		      }
 		    }
 		  ],
-	  	slidesToShow: $(this).data('items'),
-	  	slidesToScroll: 1,
+		  slide: $(this).data('slide-container'),
+	  	slidesToShow: parseInt($(this).data('items')),
+	  	slidesToScroll: parseInt($(this).data('items-to-scroll')),
 
 	  	onSetPosition: function(slider){
 	  		var carousel_width = parseInt(slider.$slider.css('width'));
@@ -40,6 +47,20 @@ jQuery(document).ready(function($) {
 	  	},
 	  	variableWidth: true
 		});
+	});
 
+	$('.expandable-more-link').click(function(e){
+		e.preventDefault();
+
+		if (typeof $(this).data('alt-title') != 'undefined'){
+			var temp = $(this).html();
+			$(this).html($(this).data('alt-title'));
+			$(this).data('alt-title', temp);
+		}
+
+		$(this).toggleClass('expandable-more-link-open').toggleClass('expandable-more-link-closed');
+
+		var target = '.' + $(this).data('expand-target-element');
+		$(target).slideToggle('fast');
 	});
 });
